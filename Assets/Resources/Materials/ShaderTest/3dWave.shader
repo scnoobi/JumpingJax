@@ -70,11 +70,9 @@
                 float3 normal = (IN[0].normal + IN[1].normal + IN[2].normal) / 3;
 
                 float val = sin((_Time + barycenter.z) * _Frequency);
-                float3 randomHeightx = float3(val, val, val);
-                /*if (randomHeightx.x < 0) {
-                    randomHeightx = float3(0,0,0);
-                }*/
-                float4 pyramidHeight = _Amplitude * float4(normal, 0.0) * float4(randomHeightx, 1.0);
+                float absoluteVal = (val + 1) / 2;
+                float3 randomHeightx = float3(absoluteVal, absoluteVal, absoluteVal);
+                float4 pyramidHeight = _Amplitude * float4(randomHeightx, 1.0) * float4(normal, 0.0);
                 float4 centerWithHeight = barycenter + pyramidHeight;
 
                 for (int i = 0; i < 3; i++) {
