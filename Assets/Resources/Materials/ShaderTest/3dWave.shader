@@ -3,7 +3,8 @@
     Properties
     {
         _MainTex("Texture", 2D) = "white" {}
-        _ExtrusionFactor("Extrusion factor", float) = 0
+        _Amplitude("Amplitude", float) = 0
+        _Frequency("Frequency", float) = 0
     }
     SubShader
     {
@@ -46,7 +47,8 @@
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _ExtrusionFactor;
+            float _Amplitude;
+            float _Frequency;
 
             v2g vert(appdata v)
             {
@@ -58,17 +60,6 @@
                 return o;
             }
 
-            float random(float2 uv)
-            {
-                return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453123);
-            }
-
-            float rand(float3 vec) {
-                float random = dot(vec, float3(12.9898, 78.233, 37.719));
-                random = frac(random * 143758.5453);
-                return random;
-            }
-
             [maxvertexcount(9)]
             void geom(triangle v2g IN[3], inout TriangleStream<g2f> triStream)
             {
@@ -78,11 +69,13 @@
 
                 float3 normal = (IN[0].normal + IN[1].normal + IN[2].normal) / 3;
 
-
-                float frequency = 40;
-                float angle = _Time * frequency;
-                float4 v2 = cos(_Time + barycenter.z);
-                float4 pyramidTopPosition = barycenter + float4(normal * v2, 0.0) * _ExtrusionFactor;
+                float val = sin((_Time + barycenter.z) * _Frequency);
+                float3 randomHeightx = float3(val, val, val);
+                /*if (randomHeightx.x < 0) {
+                    randomHeightx = float3(0,0,0);
+                }*/
+                float4 pyramidHeight = _Amplitude * float4(normal, 0.0) * float4(randomHeightx, 1.0);
+                float4 centerWithHeight = barycenter + pyramidHeight;
 
                 for (int i = 0; i < 3; i++) {
                     int next = (i + 1) % 3;
@@ -90,10 +83,10 @@
                     o.vertex = UnityObjectToClipPos(IN[i].vertex);
                     UNITY_TRANSFER_FOG(o,o.vertex);
                     o.uv = TRANSFORM_TEX(IN[i].uv, _MainTex);
-                    o.color = fixed4(1.0, 0.0, 0.0, 1.0);
+                    o.color = fixed4(0.0, 0.0, 0.0, 1.0);
                     triStream.Append(o);
 
-                    o.vertex = UnityObjectToClipPos(pyramidTopPosition);
+                    o.vertex = UnityObjectToClipPos(centerWithHeight);
                     UNITY_TRANSFER_FOG(o,o.vertex);
                     o.uv = TRANSFORM_TEX(IN[i].uv, _MainTex);
                     o.color = fixed4(0.0, 0.0, 1.0, 1.0);
