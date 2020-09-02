@@ -5,6 +5,9 @@
         _MainTex("Texture", 2D) = "white" {}
         _Amplitude("Amplitude", float) = 0
         _Frequency("Frequency", float) = 0
+        _Color1("Color", Color) = (1.0, 1.0, 1.0, 1.0)
+        _Color2("Color", Color) = (1.0, 1.0, 1.0, 1.0)
+        _Color3("Color", Color) = (1.0, 1.0, 1.0, 1.0)
     }
     SubShader
     {
@@ -49,6 +52,9 @@
             float4 _MainTex_ST;
             float _Amplitude;
             float _Frequency;
+            float4 _Color1;
+            float4 _Color2;
+            float4 _Color3;
 
             v2g vert(appdata v)
             {
@@ -81,19 +87,19 @@
                     o.vertex = UnityObjectToClipPos(IN[i].vertex);
                     UNITY_TRANSFER_FOG(o,o.vertex);
                     o.uv = TRANSFORM_TEX(IN[i].uv, _MainTex);
-                    o.color = fixed4(0.0, 0.0, 0.0, 1.0);
+                    o.color = _Color1;
                     triStream.Append(o);
 
                     o.vertex = UnityObjectToClipPos(centerWithHeight);
                     UNITY_TRANSFER_FOG(o,o.vertex);
                     o.uv = TRANSFORM_TEX(IN[i].uv, _MainTex);
-                    o.color = fixed4(0.0, 0.0, 1.0, 1.0);
+                    o.color = _Color2;
                     triStream.Append(o);
 
                     o.vertex = UnityObjectToClipPos(IN[next].vertex);
                     UNITY_TRANSFER_FOG(o,o.vertex);
                     o.uv = TRANSFORM_TEX(IN[next].uv, _MainTex);
-                    o.color = fixed4(0.0, 1.0, 0.0, 1.0);
+                    o.color = _Color3;
                     triStream.Append(o);
 
                     triStream.RestartStrip();
