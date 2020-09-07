@@ -118,8 +118,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1836947705742582154}
   m_HandleRect: {fileID: 3505716282595454428}
   m_Direction: 2
-  m_Value: 1.0000004
-  m_Size: 0.68415296
+  m_Value: 0.99999964
+  m_Size: 0.7082097
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -521,7 +521,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1209,7 +1209,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7714192549736827568
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1607,7 +1607,7 @@ MonoBehaviour:
   commands:
   - {fileID: 11400000, guid: bb442e014ccd9e34e99b944406313379, type: 2}
   - {fileID: 11400000, guid: 2c75fce2106ba094aac387513366cd3f, type: 2}
-  - {fileID: 11400000, guid: 2b96e4f5ef7716946aa9e67a29439810, type: 2}
+  - {fileID: 11400000, guid: 96c7ee350532a97428ee13c5ecd6cece, type: 2}
   consoleContainer: {fileID: 4217946704571495377}
   consoleText: {fileID: 8648079569687684703}
   consoleInput: {fileID: 4096795683711782032}
