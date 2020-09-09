@@ -12,7 +12,8 @@ public class InGameUI : MonoBehaviour
     public Text tutorialText;
     public Text tutorialNextText;
     public GameObject tutorialPane;
-    public GameObject container;
+    public GameObject keypressContainer; // just keypresses?  
+    public GameObject container; 
     public PlayerMovement playerMovement;
 
     private string[] tutorialTexts;
@@ -76,5 +77,10 @@ public class InGameUI : MonoBehaviour
     private void ToggleUI()
     {
         container.SetActive(!container.activeSelf);
+    }
+
+    public void ToggleIndividual(GameObject element)
+    {
+        element.SetActive(!element.activeSelf);
     }
 }
