@@ -20,6 +20,7 @@ public class MiscOptions : MonoBehaviour
     {
         foreach (Transform element in inGameUIContainer)
         {
+            Debug.Log(element.name); 
             GameObject newToggle = Instantiate(togglePrefab);
             newToggle.transform.parent = scrollViewContent;
             newToggle.name = $"{element.name}Toggle";

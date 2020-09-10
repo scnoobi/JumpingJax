@@ -12,7 +12,7 @@ public class InGameUI : MonoBehaviour
     public Text tutorialText;
     public Text tutorialNextText;
     public GameObject tutorialPane;
-    public GameObject keypressContainer; // just keypresses?  
+    public GameObject keypresses;
     public GameObject container; 
     public PlayerMovement playerMovement;
 
