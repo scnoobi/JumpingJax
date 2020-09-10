@@ -21,14 +21,14 @@ public class MiscOptions : MonoBehaviour
         foreach (Transform element in inGameUIContainer)
         {
             Debug.Log(element.name); 
-            GameObject newToggle = Instantiate(togglePrefab);
-            newToggle.transform.parent = scrollViewContent;
+            GameObject newToggle = Instantiate(togglePrefab/*, scrollViewContent*/);
+            newToggle.transform.SetParent(scrollViewContent, false);
             newToggle.name = $"{element.name}Toggle";
             Text text = newToggle.GetComponentInChildren<Text>();
             text.text = element.name; 
             Toggle toggle = newToggle.GetComponent<Toggle>();
             InGameUI _inGameUI = inGameUI.GetComponent<InGameUI>(); 
-            toggle.onValueChanged.AddListener((value) => _inGameUI.ToggleIndividual(element.gameObject));
+            toggle.onValueChanged.AddListener((value) => element.gameObject.SetActive(value));
         }
     }
 

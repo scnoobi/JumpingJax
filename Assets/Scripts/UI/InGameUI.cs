@@ -78,9 +78,4 @@ public class InGameUI : MonoBehaviour
     {
         container.SetActive(!container.activeSelf);
     }
-
-    public void ToggleIndividual(GameObject element)
-    {
-        element.SetActive(!element.activeSelf);
-    }
 }
