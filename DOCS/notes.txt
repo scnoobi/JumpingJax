@@ -1,0 +1,8 @@
+[BUGS] (BUILD 2020.9.11 HEAD 82d25db7669d2c07c12f535fef994cf4a33a0789):
+	-Console not working (throwing NullReferenceExceptions on each keypress)
+	-No 16:10 resolutions
+	-Fullscreen and windowed modes are inverted
+	-Game paused screen showing up after every settings menu, even in main menu
+	-Sometimes jumps don't register
+	-Needs to be a binding options, at least for the scroll wheel to jump. Jumping with spacebar feels so old
+	-It looks like that the momentum translation doesn't change based on where the player is looking!!!!! THIS IS VERY BAD!!!!
