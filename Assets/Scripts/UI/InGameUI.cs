@@ -19,11 +19,10 @@ public class InGameUI : MonoBehaviour
     private string[] tutorialTexts;
     private int tutorialTextIndex = 0;
 
-
     public GameObject container;
     public PlayerMovement playerMovement;
 
-    private void Start()
+    private void Awake()
     {
         playerMovement = GetComponentInParent<PlayerMovement>();
         speed = GetComponentInChildren<SpeedSlider>();

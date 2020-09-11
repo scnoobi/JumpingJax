@@ -7,25 +7,19 @@ public class MiscOptions : MonoBehaviour
 {
     public GameObject togglePrefab;
     public Transform scrollViewContent;
-    public GameObject inGameUIPrefab;
-    public InGameUI inGameUI;
-    public GameObject inGameUIContainer; 
-    //private GameObject inGameUIObject; 
-    private Transform container; 
 
-    void Start()
+    private InGameUI inGameUI;
+
+    void Awake()
     {
-        //inGameUIObject = GameObject.Find("InGameUI"); 
-        //container = inGameUIPrefab.transform.Find("Container");
+        inGameUI = GameObject.Find("PortalBhopPlayer").GetComponentInChildren<InGameUI>();
         PopulateToggles();
-        inGameUI.container.transform.Find("SpeedContainer").gameObject.SetActive(false);
     }
 
     private void PopulateToggles()
     {
-        foreach (Transform element in inGameUIContainer.transform)
+        foreach (Transform element in inGameUI.container.transform)
         {
-            Debug.Log(element.name);
             GameObject newToggle = Instantiate(togglePrefab);
             newToggle.transform.SetParent(scrollViewContent, false);
             newToggle.name = $"{element.name}Toggle";
@@ -33,11 +27,7 @@ public class MiscOptions : MonoBehaviour
             text.text = element.name;
             Toggle toggle = newToggle.GetComponent<Toggle>();
             toggle.isOn = element.gameObject.activeSelf ? true : false;
-            toggle.onValueChanged.AddListener((value) =>
-            {
-                Debug.Log(element.name + " changed to " + value);
-                element.gameObject.SetActive(value);
-            });
+            toggle.onValueChanged.AddListener((value) => element.gameObject.SetActive(value));
         }
     }
 
