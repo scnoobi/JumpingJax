@@ -9,4 +9,4 @@
 	-Ledge detection needs to be reworked. Both for jumping and landing. The player can't slide up the corner of a block.
 	-Sometimes jumps register twice, causing me to go flying in the air after landing
 	- VERY BAD::: PHYSICS ARE MORE CONSISTENT IN THE EDITOR!!!!!!!!! ---ATTENTION-----
-	-It looks like that in certain cases the fowrward momentum carries over to the backward one when switching directions rapidly
+	-It looks like that in certain cases the forward momentum carries over to the backward one when switching directions rapidly
