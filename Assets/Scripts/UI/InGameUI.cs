@@ -29,6 +29,8 @@ public class InGameUI : MonoBehaviour
 
         tutorialTexts = GameManager.GetCurrentLevel().tutorialTexts;
         LoadNextTutorial();
+
+        //container.SetActive(OptionsPreferencesManager.get)
     }
 
     void Update()
