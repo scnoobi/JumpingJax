@@ -2,33 +2,28 @@
 using System.Collections.Generic;   
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class MiscOptions : MonoBehaviour
 {
     public GameObject togglePrefab;
     public Transform scrollViewContent;
 
-    private InGameUI inGameUI;
+    public ToggleItem speedToggle;
+    public ToggleItem timeToggle;
+    public ToggleItem keyPressedToggle;
+    public ToggleItem tutorialToggle;
 
     void Awake()
     {
-        inGameUI = GameObject.Find("PortalBhopPlayer").GetComponentInChildren<InGameUI>();
-        PopulateToggles();
+        Populate();
     }
 
-    private void PopulateToggles()
+    private void Populate()
     {
-        foreach (Transform element in inGameUI.container.transform)
-        {
-            GameObject newToggle = Instantiate(togglePrefab);
-            newToggle.transform.SetParent(scrollViewContent, false);
-            newToggle.name = $"{element.name}Toggle";
-            Text text = newToggle.GetComponentInChildren<Text>();
-            text.text = element.name;
-            Toggle toggle = newToggle.GetComponent<Toggle>();
-            toggle.isOn = element.gameObject.activeSelf ? true : false;
-            toggle.onValueChanged.AddListener((value) => element.gameObject.SetActive(value));
-        }
+        GameObject newToggle = Instantiate(togglePrefab, scrollViewContent);
+        ToggleItem item = newToggle.GetComponent<ToggleItem>();
+        //item.Init("speed", OptionsPreferencesManager.get)
     }
 
     public void SetDefaults()
