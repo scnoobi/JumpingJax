@@ -5,4 +5,8 @@
 	-Game paused screen showing up after every settings menu, even in main menu
 	-Sometimes jumps don't register
 	-Needs to be a binding options, at least for the scroll wheel to jump. Jumping with spacebar feels so old
-	-It looks like that the momentum translation doesn't change based on where the player is looking!!!!! THIS IS VERY BAD!!!!
+	//It looks like that the momentum translation doesn't change based on where the player is looking!!!!! THIS IS VERY BAD!!!!
+	-Ledge detection needs to be reworked. Both for jumping and landing. The player can't slide up the corner of a block.
+	-Sometimes jumps register twice, causing me to go flying in the air after landing
+	- VERY BAD::: PHYSICS ARE MORE CONSISTENT IN THE EDITOR!!!!!!!!! ---ATTENTION-----
+	-It looks like that in certain cases the fowrward momentum carries over to the backward one when switching directions rapidly
