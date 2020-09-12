@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,12 @@ public class InGameUI : MonoBehaviour
     // Speed
     public SpeedSlider speed;
 
+    // Crosshair 
+    public Crosshair crosshair;
+
+    // KeyPressed
+    public KeyPressed keyPressed; 
+
     // Tutorial
     public Text tutorialText;
     public Text tutorialNextText;
@@ -22,18 +29,37 @@ public class InGameUI : MonoBehaviour
     public GameObject container;
     public PlayerMovement playerMovement;
 
-    private int speedToggleStartingValue; 
+    // For comparison in Update
+    //private int crosshairToggleStartingValue;
+    //private int speedToggleStartingValue;
+    //private int timeToggleStartingValue;
+    //private int keyPressedToggleStartingValue;
+    //private int tutorialToggleStartingValue;
+
+    //private Dictionary<string, int> togglePreferences = new Dictionary<string, int>()
+    //{
+    //    { "CrosshairToggle", OptionsPreferencesManager.GetCrosshairToggle() },
+    //    { "SpeedToggle", OptionsPreferencesManager.GetSpeedToggle() },
+    //    { "TimeToggle", OptionsPreferencesManager.GetTimeToggle() },
+    //    { "KeyPressedToggle", OptionsPreferencesManager.GetKeyPressedToggle() },
+    //    { "TutorialToggle", OptionsPreferencesManager.GetTutorialToggle() },
+    //};
 
     private void Awake()
     {
         playerMovement = GetComponentInParent<PlayerMovement>();
         speed = GetComponentInChildren<SpeedSlider>();
+        crosshair = GetComponentInChildren<Crosshair>();
+        keyPressed = GetComponentInChildren<KeyPressed>();
 
         tutorialTexts = GameManager.GetCurrentLevel().tutorialTexts;
         LoadNextTutorial();
 
-        speedToggleStartingValue = OptionsPreferencesManager.GetSpeedToggle();
-        speed.gameObject.SetActive(speedToggleStartingValue == 1 ? true : false); 
+        SetToggleStartingValues();
+
+        //speedToggleStartingValue = OptionsPreferencesManager.GetSpeedToggle();
+        //speed.gameObject.SetActive(speedToggleStartingValue == 1 ? true : false);
+        
         //container.SetActive(OptionsPreferencesManager.get)
     }
 
@@ -58,12 +84,32 @@ public class InGameUI : MonoBehaviour
             ToggleUI();
         }
 
-        int newSpeedToggleValue = OptionsPreferencesManager.GetSpeedToggle();
+        // This is hideous 
+        bool newCrosshairTogglePref = OptionsPreferencesManager.GetCrosshairToggle() == 1 ? true : false;
+        bool newSpeedTogglePref = OptionsPreferencesManager.GetSpeedToggle() == 1 ? true : false;
+        bool newTimeTogglePref = OptionsPreferencesManager.GetTimeToggle() == 1 ? true : false;
+        bool newKeyPressedTogglePref = OptionsPreferencesManager.GetKeyPressedToggle() == 1 ? true : false;
+        bool newTutorialTogglePref = OptionsPreferencesManager.GetTutorialToggle() == 1 ? true : false;
 
-        if (newSpeedToggleValue != speedToggleStartingValue)
+        if (newCrosshairTogglePref != crosshair.gameObject.activeSelf)
         {
-            speed.gameObject.SetActive(!speed.gameObject.activeSelf);
-            speedToggleStartingValue = newSpeedToggleValue;
+            crosshair.gameObject.SetActive(newCrosshairTogglePref);
+        }
+        if (newSpeedTogglePref != speed.gameObject.activeSelf)
+        {
+            speed.gameObject.SetActive(newSpeedTogglePref);
+        }
+        if (newTimeTogglePref != completionTimeText.gameObject.activeSelf)
+        {
+            completionTimeText.gameObject.SetActive(newTimeTogglePref);
+        }
+        if (newKeyPressedTogglePref != keyPressed.gameObject.activeSelf)
+        {
+            keyPressed.gameObject.SetActive(newKeyPressedTogglePref);
+        }
+        if (newTutorialTogglePref != tutorialText.gameObject.activeSelf)
+        {
+            tutorialText.gameObject.SetActive(newTutorialTogglePref);
         }
     }
 
@@ -95,11 +141,38 @@ public class InGameUI : MonoBehaviour
         container.SetActive(!container.activeSelf);
     }
 
-    private void SetToggleDefaults()
+    // My attempts to make this dynamic were sloppy...
+    private void UpdateToggleValues()
     {
-        foreach (Transform element in container.transform)
-        {
-            //element.    
-        }
+    }
+
+    private bool PreferenceHasChanged(string key)
+    {
+        return MiscOptions.GetOptionPreference(key) == 1 ? true : false; 
+    }
+
+    //private bool UpdateActiveFlags(GameObject element)
+    //{
+    //    foreach (string key in System.Enum.GetNames(typeof(ToggleableUIElements)))
+    //    {
+    //        bool preferenceValue = MiscOptions.GetOptionPreference(key) == 1 ? true : false; 
+    //        if (element.activeSelf != preferenceValue)
+    //        {
+    //            element.gameObject.SetActive(!element.activeSelf); 
+    //        }
+    //    }
+    //}
+
+    private void SetToggleStartingValues()
+    {
+        crosshair.gameObject.SetActive(OptionsPreferencesManager.GetCrosshairToggle() == 1 ? true : false);
+        speed.gameObject.SetActive(OptionsPreferencesManager.GetSpeedToggle() == 1 ? true : false);
+        completionTimeText.gameObject.SetActive(OptionsPreferencesManager.GetTutorialToggle() == 1 ? true : false);
+        keyPressed.gameObject.SetActive(OptionsPreferencesManager.GetKeyPressedToggle() == 1 ? true : false);
+        tutorialText.gameObject.SetActive(OptionsPreferencesManager.GetTutorialToggle() == 1 ? true : false);
+
+        //foreach (Transform element in container.transform)
+        //{
+        //}
     }
 }

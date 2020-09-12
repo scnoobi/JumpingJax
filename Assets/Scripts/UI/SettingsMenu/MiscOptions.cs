@@ -4,27 +4,56 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
+public enum ToggleableUIElements
+{
+    CrosshairToggle, SpeedToggle, TimeToggle, KeyPressedToggle, TutorialToggle
+}
+
 public class MiscOptions : MonoBehaviour
 {
     public GameObject togglePrefab;
     public Transform scrollViewContent;
 
-    public ToggleItem speedToggle;
-    public ToggleItem timeToggle;
-    public ToggleItem keyPressedToggle;
-    public ToggleItem tutorialToggle;
-
     void Awake()
     {
-        Populate();
+        string[] keys = System.Enum.GetNames(typeof(ToggleableUIElements));
+        Populate(keys);
     }
 
-    private void Populate()
+    private void Populate(string[] keys /*ToggleableUIElements toggleItem*/)
     {
-        GameObject newToggle = Instantiate(togglePrefab, scrollViewContent);
-        ToggleItem item = newToggle.GetComponent<ToggleItem>();
-        item.Init("SpeedToggle", OptionsPreferencesManager.GetSpeedToggle() == 1 ? true : false);
-        item.toggle.onValueChanged.AddListener((value) => OptionsPreferencesManager.SetSpeedToggle(value));
+
+        for (int i = 0; i < keys.Length; i++)
+        {
+            GameObject newToggle = Instantiate(togglePrefab, scrollViewContent);
+            ToggleItem item = newToggle.GetComponent<ToggleItem>();
+            int optionPreferenceValue = GetOptionPreference(keys[i]);
+            item.Init(keys[i], optionPreferenceValue == 1 ? true : false);
+            item.toggle.onValueChanged.AddListener((value) => OptionsPreferencesManager.SetSpeedToggle(value));
+        }
+
+        //foreach (ToggleableUIElements element in System.Enum.GetValues(typeof(ToggleableUIElements)))
+        //{
+        //}
+    }
+
+    public static int GetOptionPreference(string key /*ToggleableUIElements element*/)
+    {
+        switch (key)
+        {
+            case "CrosshairToggle": /*ToggleableUIElements.CrosshairToggle:*/
+                return OptionsPreferencesManager.GetCrosshairToggle();
+            case "SpeedToggle": /*ToggleableUIElements.SpeedToggle:*/
+                return OptionsPreferencesManager.GetSpeedToggle();
+            case "TimeToggle": /*ToggleableUIElements.TimeToggle:*/
+                return OptionsPreferencesManager.GetTimeToggle();
+            case "KeyPressedToggle": /*ToggleableUIElements.KeyPressedToggle:*/
+                return OptionsPreferencesManager.GetKeyPressedToggle();
+            case "TutorialToggle": /*ToggleableUIElements.TutorialToggle:*/
+                return OptionsPreferencesManager.GetTutorialToggle();
+            default:
+                return 0;
+        }
     }
 
     public void SetDefaults()
