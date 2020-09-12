@@ -238,6 +238,7 @@ GameObject:
   - component: {fileID: 6250448917265522181}
   - component: {fileID: 3652708290981953865}
   - component: {fileID: 8665920956149846092}
+  - component: {fileID: 1573900453949495946}
   m_Layer: 12
   m_Name: TogglePrefab
   m_TagString: Untagged
@@ -338,3 +339,17 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 0
+--- !u!114 &1573900453949495946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8338762763147159721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6fce410717f7a34b944d37f78afcd0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggleNameText: {fileID: 7764136817663447678}
+  toggle: {fileID: 3652708290981953865}

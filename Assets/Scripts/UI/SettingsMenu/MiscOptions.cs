@@ -23,13 +23,8 @@ public class MiscOptions : MonoBehaviour
     {
         GameObject newToggle = Instantiate(togglePrefab, scrollViewContent);
         ToggleItem item = newToggle.GetComponent<ToggleItem>();
-        //item.Init("speed", OptionsPreferencesManager.get)
-        //item.toggle.onValueChanged.AddListener(() => SetOption());
-    }
-    
-    private void SetOption()
-    {
-        //OptionsPreferencesManager.set
+        item.Init("SpeedToggle", OptionsPreferencesManager.GetSpeedToggle() == 1 ? true : false);
+        item.toggle.onValueChanged.AddListener((value) => OptionsPreferencesManager.SetSpeedToggle(value));
     }
 
     public void SetDefaults()

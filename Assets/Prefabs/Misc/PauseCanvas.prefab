@@ -996,11 +996,10 @@ MonoBehaviour:
   togglePrefab: {fileID: 8338762763147159721, guid: c1ca9cccee8d6514cab260bb690c19b3,
     type: 3}
   scrollViewContent: {fileID: 2764066914456228925}
-  inGameUIPrefab: {fileID: 5918530474617284080, guid: c6920fc85cc134942a19639c8806e612,
-    type: 3}
-  inGameUI: {fileID: 6317345905899529123, guid: c6920fc85cc134942a19639c8806e612,
-    type: 3}
-  inGameUIContainer: {fileID: 0}
+  speedToggle: {fileID: 0}
+  timeToggle: {fileID: 0}
+  keyPressedToggle: {fileID: 0}
+  tutorialToggle: {fileID: 0}
 --- !u!1 &2189174602251875389
 GameObject:
   m_ObjectHideFlags: 0

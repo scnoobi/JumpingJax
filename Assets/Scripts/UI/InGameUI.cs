@@ -22,6 +22,8 @@ public class InGameUI : MonoBehaviour
     public GameObject container;
     public PlayerMovement playerMovement;
 
+    private int speedToggleStartingValue; 
+
     private void Awake()
     {
         playerMovement = GetComponentInParent<PlayerMovement>();
@@ -30,6 +32,8 @@ public class InGameUI : MonoBehaviour
         tutorialTexts = GameManager.GetCurrentLevel().tutorialTexts;
         LoadNextTutorial();
 
+        speedToggleStartingValue = OptionsPreferencesManager.GetSpeedToggle();
+        speed.gameObject.SetActive(speedToggleStartingValue == 1 ? true : false); 
         //container.SetActive(OptionsPreferencesManager.get)
     }
 
@@ -54,6 +58,13 @@ public class InGameUI : MonoBehaviour
             ToggleUI();
         }
 
+        int newSpeedToggleValue = OptionsPreferencesManager.GetSpeedToggle();
+
+        if (newSpeedToggleValue != speedToggleStartingValue)
+        {
+            speed.gameObject.SetActive(!speed.gameObject.activeSelf);
+            speedToggleStartingValue = newSpeedToggleValue;
+        }
     }
 
     private void LoadNextTutorial()
@@ -82,5 +93,13 @@ public class InGameUI : MonoBehaviour
     private void ToggleUI()
     {
         container.SetActive(!container.activeSelf);
+    }
+
+    private void SetToggleDefaults()
+    {
+        foreach (Transform element in container.transform)
+        {
+            //element.    
+        }
     }
 }
