@@ -14,6 +14,9 @@ public class MiscOptions : MonoBehaviour
     public GameObject togglePrefab;
     public Transform scrollViewContent;
 
+    public delegate void OnToggle();
+    public static event OnToggle onToggle; 
+
     void Awake()
     {
         string[] keys = System.Enum.GetNames(typeof(ToggleableUIElements));
@@ -29,7 +32,7 @@ public class MiscOptions : MonoBehaviour
             ToggleItem item = newToggle.GetComponent<ToggleItem>();
             int optionPreferenceValue = GetOptionPreference(keys[i]);
             item.Init(keys[i], optionPreferenceValue == 1 ? true : false);
-            item.toggle.onValueChanged.AddListener((value) => OptionsPreferencesManager.SetSpeedToggle(value));
+            item.toggle.onValueChanged.AddListener((value) => onToggle?.Invoke());
         }
 
         //foreach (ToggleableUIElements element in System.Enum.GetValues(typeof(ToggleableUIElements)))
@@ -57,6 +60,10 @@ public class MiscOptions : MonoBehaviour
     }
 
     public void SetDefaults()
+    {
+    }
+
+    private void Update()
     {
     }
 }
