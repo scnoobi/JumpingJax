@@ -4,27 +4,27 @@ using UnityEngine;
 
 public class PlayerProgress : MonoBehaviour
 {
+    [Header("Set in editor")]
+    public PlayerUI playerUI;
+
+    [Header("Debugging properties")]
     [SerializeField]
     public Checkpoint currentCheckpoint;
 
-    public PlayerUI playerUI;
-
-    public PlayerMovement playerMovement;
-    public CameraMove cameraMove;
-    public PlayerGhostRun playerGhostRun;
-
-    private PortalPair portals;
-
+    private PlayerMovement playerMovement;
+    private CameraMove cameraMove;
+    private PlayerGhostRun playerGhostRun;
+    private Crosshair crosshair;
+    private PortalPair portalPair;
+    private Checkpoint firstCheckpoint;
 
     private void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
         cameraMove = GetComponent<CameraMove>();
         playerGhostRun = GetComponent<PlayerGhostRun>();
-        if (GameManager.GetCurrentLevel().isPortalLevel)
-        {
-            portals = GameObject.FindGameObjectWithTag("Portal").GetComponent<PortalPair>();
-        }
+        crosshair = GetComponent<Crosshair>();
+        portalPair = GameObject.FindObjectOfType<PortalPair>();
     }
 
     private void Update()
@@ -42,9 +42,14 @@ public class PlayerProgress : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("entered checkpoint");
         Checkpoint checkPointHit = other.gameObject.GetComponent<Checkpoint>();
         if (checkPointHit)
         {
+            if(checkPointHit.level == 1)
+            {
+                firstCheckpoint = checkPointHit;
+            }
             HitNewCheckPoint(checkPointHit);
         }
     }
@@ -85,17 +90,48 @@ public class PlayerProgress : MonoBehaviour
 
         playerMovement.newVelocity = Vector3.zero;
 
-
         // If the player is restarting at the beginning, reset timer
         if (currentCheckpoint.level == 1)
         {
-            if (GameManager.GetCurrentLevel().isPortalLevel)
+            crosshair.Init();
+            if(portalPair != null)
             {
-                portals.Portals[0].ResetPortal();
-                portals.Portals[1].ResetPortal();
+                portalPair.ResetPortals();
             }
-            GameManager.Instance.currentCompletionTime = 0;
+            GameManager.RestartLevel();
             playerGhostRun.RestartRun();
+            ResetCollectibles();
+            ResetCheckpoints();
+        }
+    }
+
+    public void ResetPlayer()
+    {
+        playerUI.ToggleOffWinScreen();
+        currentCheckpoint = firstCheckpoint;
+        Respawn();
+        
+        GameManager.RestartLevel();
+    }
+
+    private void ResetCheckpoints()
+    {
+        Checkpoint[] checkpoints = GameObject.FindObjectsOfType<Checkpoint>();
+        foreach(Checkpoint checkpoint in checkpoints)
+        {
+            checkpoint.SetUncompleted();
+            BoxCollider collider = checkpoint.GetComponent<BoxCollider>();
+            collider.enabled = false;
+            collider.enabled = true;
+        }
+    }
+
+    private void ResetCollectibles()
+    {
+        CollectibleHandler[] collectibles = GameObject.FindObjectsOfType<CollectibleHandler>();
+        foreach (CollectibleHandler handler in collectibles)
+        {
+            handler.ResetActive();
         }
     }
 }

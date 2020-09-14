@@ -10,8 +10,9 @@ public class GameManager : MonoBehaviour
 
     public LevelDataContainer levelDataContainer;
     public static uint AppId = 1315100;
+    public static int workshopLevelIndex = -1; // assumes workshop is the second to last scene (before credits)
 
-    public int currentLevelBuildIndex;
+    public Level currentLevel;
     public float currentCompletionTime;
     public bool didWinCurrentLevel;
     public bool isSteamActive;
@@ -41,6 +42,7 @@ public class GameManager : MonoBehaviour
 
     private void StartSteam()
     {
+        workshopLevelIndex = SceneManager.sceneCountInBuildSettings - 2;
         try
         {
             if (!SteamClient.IsValid)
@@ -64,7 +66,7 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        Steamworks.SteamClient.Shutdown();
+        SteamClient.Shutdown();
     }
 
     private void OnEnable()
@@ -77,24 +79,64 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    public static void LoadScene(int buildIndex)
     {
-        currentLevelBuildIndex = scene.buildIndex;
-
-        if (scene.buildIndex == -1)
+        if(buildIndex != PlayerConstants.BuildSceneIndex)
         {
-            // This means the scene is loaded from outside of the menu, possibly from the workshop
-            // TODO: update this based off of the loaded level
-            currentLevelBuildIndex = 1;
+            Instance.currentLevel = Instance.levelDataContainer.levels[buildIndex - 1];
         }
 
+        AsyncOperation sceneLoadOperation = SceneManager.LoadSceneAsync(buildIndex);
+        LoadingScreenManager.Instance.Show(sceneLoadOperation);
+    }
+
+    public static void LoadScene(Level workshopLevel)
+    {
+        Instance.currentLevel = workshopLevel;
+        string sceneAssetPath = AssetBundleManager.LoadSceneFromBundle(workshopLevel.filePath);
+        AsyncOperation sceneLoadOperation = SceneManager.LoadSceneAsync(sceneAssetPath);
+        LoadingScreenManager.Instance.Show(sceneLoadOperation);
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
         currentCompletionTime = 0;
         didWinCurrentLevel = false;
+
+        if(scene.buildIndex == PlayerConstants.BuildSceneIndex)
+        {
+            AssetBundle.UnloadAllAssetBundles(true);
+            return;
+        }      
+        
+        // Set our current level if we are loading from that scene, and not the menu
+        if (Instance.currentLevel == null && scene.buildIndex > 0)
+        {
+            Instance.currentLevel = Instance.levelDataContainer.levels[scene.buildIndex - 1];
+        }
+
+        // Set up the workshop level to have the right number of checkpoints, since it isn't loaded on the scene
+        if (Instance.currentLevel.filePath != string.Empty)
+        {
+            Instance.currentLevel.numberOfCheckpoints = GameObject.FindObjectsOfType<Checkpoint>().Length;
+        }
     }
 
     public static Level GetCurrentLevel()
     {
-        return Instance.levelDataContainer.levels[Instance.currentLevelBuildIndex - 1];
+        return Instance.currentLevel;
+    }
+
+    public static void NextLevel()
+    {
+        // NOTE: The level build index starts at 1 (because main menu is at index 0)
+        Instance.currentLevel = Instance.levelDataContainer.levels[Instance.currentLevel.levelBuildIndex];
+    }
+
+    public static void RestartLevel()
+    {
+        Instance.currentCompletionTime = 0;
+        Instance.didWinCurrentLevel = false;
     }
 
     public static void FinishedLevel()
@@ -108,10 +150,11 @@ public class GameManager : MonoBehaviour
         if (completionTime < levelToUpdate.completionTime || levelToUpdate.completionTime == 0)
         {
             levelToUpdate.completionTime = completionTime;
-        }
-        if (GameManager.Instance.isSteamActive == true)
-        {
-            StatsManager.SaveLevelCompletion(levelToUpdate.levelName, completionTime);
+
+            if (GameManager.Instance.isSteamActive == true)
+            {
+                StatsManager.SaveLevelCompletion(levelToUpdate);
+            }
         }
     }
 }

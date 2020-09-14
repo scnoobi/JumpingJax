@@ -4,15 +4,33 @@ using UnityEngine;
 
 public class PortalPair : MonoBehaviour
 {
-    public Portal[] Portals { private set; get; }
+    public Portal BluePortal { private set; get; }
+    public Portal PinkPortal { private set; get; }
+
+    public GameObject bluePortalPrefab;
+    public GameObject pinkPortalPrefab;
 
     private void Awake()
     {
-        Portals = gameObject.GetComponentsInChildren<Portal>(true);
+        GameObject tempBluePortal = Instantiate(bluePortalPrefab, transform);
+        BluePortal = tempBluePortal.GetComponent<Portal>();
 
-        if (Portals.Length != 2)
-        {
-            Debug.LogError("PortalPair children must contain exactly two Portal components in total.");
-        }
+        GameObject tempPinkPortal = Instantiate(pinkPortalPrefab, transform);
+        PinkPortal = tempPinkPortal.GetComponent<Portal>();
+
+        BluePortal.Init(PortalType.Blue, PinkPortal);
+        PinkPortal.Init(PortalType.Pink, BluePortal);
+    }
+
+    public void ResetPortals()
+    {
+        BluePortal.ResetPortal();
+        PinkPortal.ResetPortal();
+    }
+
+    public void SetRenderTextures(RenderTexture blueTexture, RenderTexture pinkTexture)
+    {
+        BluePortal.SetTexture(blueTexture);
+        PinkPortal.SetTexture(pinkTexture);
     }
 }

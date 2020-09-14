@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerGhostRun : MonoBehaviour
 {
-    public KeyPressed keyPressed;
+    private KeyPressed keyPressed;
 
     public GameObject ghostRunnerPrefab;
     private GameObject ghostRunner;
@@ -17,9 +15,9 @@ public class PlayerGhostRun : MonoBehaviour
     private Level currentLevel;
     private int currentDataIndex = 0;
 
+    private const int maxDataCount = 25000; //Makes it so max file save is 5MB, stores 20.8 min of Ghost data saved
 
     private const float ghostRunSaveInterval = 0.05f;
-
 
     void Start()
     {
@@ -29,8 +27,10 @@ public class PlayerGhostRun : MonoBehaviour
         if(ghostRunner == null)
         {
             ghostRunner = Instantiate(ghostRunnerPrefab);
+            ghostRunner.name = "ghost runner";
         }
-        ghostRunner.SetActive(false);
+        ghostRunner.SetActive(OptionsPreferencesManager.GetGhostToggle() && GameManager.GetCurrentLevel().isCompleted);
+        MiscOptions.onGhostToggle += ToggleGhost;
     }
 
     private void Update()
@@ -56,17 +56,17 @@ public class PlayerGhostRun : MonoBehaviour
     private void UpdateGhost()
     {
         if (currentLevel == null 
-            || currentLevel.ghostRunPositions == null 
-            || currentDataIndex >= currentLevel.ghostRunPositions.Length - 1)
+            || currentLevel.ghostRunPositions == null)
         {
             return; // ghost run is finished
         }
-
+        if (currentDataIndex >= currentLevel.ghostRunPositions.Length - 1)
+        {
+            currentDataIndex = 0;
+        }
         // Only show the ghost run for a level we've completed
         if (currentLevel.isCompleted)
         {
-            ghostRunner.SetActive(true);
-
             float lerpValue = ghostRunnerTimer / ghostRunSaveInterval;
             Vector3 position = Vector3.Lerp(ghostRunner.transform.position, currentLevel.ghostRunPositions[currentDataIndex], lerpValue);
             ghostRunner.transform.position = position;
@@ -79,13 +79,17 @@ public class PlayerGhostRun : MonoBehaviour
             currentDataIndex++;
             ghostRunnerTimer = 0;
         }
-    }
 
+        if (!OptionsPreferencesManager.GetGhostToggle())
+        {
+            ghostRunner.SetActive(false);
+        }
+    }
 
     private void RecordCurrentRunData()
     {
         ghostRunSaveTimer += Time.deltaTime;
-        if (ghostRunSaveTimer > ghostRunSaveInterval)
+        if (ghostRunSaveTimer > ghostRunSaveInterval && currentRunPositionData.Count < maxDataCount)
         {
             ghostRunSaveTimer = 0;
             currentRunPositionData.Add(transform.position);
@@ -112,7 +116,17 @@ public class PlayerGhostRun : MonoBehaviour
 
     public void SaveCurrentRunData()
     {
-        GameManager.GetCurrentLevel().ghostRunPositions = currentRunPositionData.ToArray();
-        GameManager.GetCurrentLevel().ghostRunKeys = currentRunKeyData.ToArray();
+        if(GameManager.GetCurrentLevel().completionTime > GameManager.Instance.currentCompletionTime || GameManager.GetCurrentLevel().completionTime == 0)
+        {
+            GameManager.GetCurrentLevel().ghostRunPositions = currentRunPositionData.ToArray();
+            GameManager.GetCurrentLevel().ghostRunKeys = currentRunKeyData.ToArray();
+        }
+    }
+
+    private void ToggleGhost(bool isOn)
+    {
+        Debug.Log("ToggleGhost fired.");
+        ghostRunner.SetActive(isOn); 
+        OptionsPreferencesManager.SetGhostToggle(isOn);
     }
 }
